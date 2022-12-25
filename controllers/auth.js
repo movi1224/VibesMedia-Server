@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt' //用以加密
+import bcryptjs from 'bcryptjs' //用以加密
 import jwt from 'jsonwebtoken'
 import User from '../models/User.js'
 
@@ -9,8 +9,8 @@ export const register = async (req, res) => {
     const { firstName, lastName, email, password, picturePath, friends, location, occupation } =
       req.body
 
-    const salt = await bcrypt.genSalt() // 用Salt来encrypt password
-    const passwordHash = await bcrypt.hash(password, salt)
+    const salt = await bcryptjs.genSalt() // 用Salt来encrypt password
+    const passwordHash = await bcryptjs.hash(password, salt)
     // 加密完成后可以储存新用户数据啦 (后面两个是mock的数据暂时不做这个功能)
     const newUser = new User({
       firstName,
@@ -37,7 +37,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body
     const user = await User.findOne({ email: email })
     if (!user) return res.status(400).json({ msg: 'User does not exist.' }) // 如果没找到提示用户不存在
-    const isMatch = await bcrypt.compare(password, user.password) // 如果找到用户 核对密码
+    const isMatch = await bcryptjs.compare(password, user.password) // 如果找到用户 核对密码
     if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials.' })
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET) // 创建JWT用以记录用户登录
