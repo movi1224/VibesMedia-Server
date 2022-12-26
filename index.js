@@ -1,6 +1,6 @@
 import express from 'express'
 import bodyParser from 'body-parser'
-import mongoose, { mongo } from 'mongoose'
+import mongoose from 'mongoose'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import multer from 'multer'

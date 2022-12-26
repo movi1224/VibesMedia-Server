@@ -63,3 +63,23 @@ export const likePost = async (req, res) => {
     res.status(404).json({ message: err.message })
   }
 }
+
+/* DELETE */
+export const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params // get relevant post
+    const { userId } = req.body // 注意这里userId在body中获取
+    const post = await Post.findById(id)
+    const postOwnerId = post.userId
+
+    // 验证当前用户是否是这个post的创建用户
+    if (postOwnerId === userId) {
+      await Post.findByIdAndDelete(id) // 删除这个Post的信息
+      const post = await Post.find() // 重新获取所有post
+      res.status(200).json(post)
+    } else
+      res.status(403).json({ message: 'Cannot delete the post not belong to the current user' })
+  } catch (err) {
+    res.status(404).json({ message: err.message })
+  }
+}
